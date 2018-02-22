@@ -9,6 +9,7 @@ import ListItem from 'material-ui/List/ListItem';
 import Avatar from 'material-ui/Avatar';
 import TextField from 'material-ui/TextField';
 import List from 'material-ui/List/List';
+import Paper from 'material-ui/Paper';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import './message.css';
 
@@ -19,11 +20,12 @@ class AddCity extends Component {
         this.addCityUser = this.addCityUser.bind(this);
         this.checkCities = this.checkCities.bind(this);
         this.lastLetter = this.lastLetter.bind(this);
-        this.addCityAI = this.addCityAI.bind(this)
+        this.addCityAI = this.addCityAI.bind(this);
+        this.sendError = this.sendError.bind(this);
     }
 
     lastLetter (letter) {
-        return this.props.setStartLetter(letter);
+        return this.props.setStartLetter(letter.toLowerCase());
     }
 
     checkCities (elem) {
@@ -32,9 +34,18 @@ class AddCity extends Component {
 
     }
 
+    sendError (status, message) {
+        let errObj = {
+            message: message,
+            status: status
+        };
+        return this.props.catchError(errObj);
+    }
+
     addCityUser () {
         let itemText = this.refs.inputCity.getValue().trim();
-        if (itemText !== "") {
+        let firstInputLetter = itemText[0].toLowerCase();
+        if (!this.props.startLetter[0] || firstInputLetter === this.props.startLetter[0]) {
             let count = 0;
             let cityValid = cities.some(this.checkCities);
             if (cityValid){
@@ -42,11 +53,7 @@ class AddCity extends Component {
             }
 
             if (count === 0) {
-                let errObj = {
-                    message: 'There is no such city',
-                    status: true
-                };
-                return this.props.catchError(errObj);
+                return this.sendError(true, 'There is no such city')
             }
 
             if (count > 0) {
@@ -58,38 +65,34 @@ class AddCity extends Component {
                         name: itemText,
                         author: 'I'
                     };
-                  /*  this.lastLetter(itemText[itemText.length - 1]);*/
-                    this.props.setStartLetter(itemText[itemText.length - 1]);
-                    console.log(itemText[itemText.length - 1]);
+                    this.lastLetter(itemText[itemText.length - 1]);
                     this.props.addCity(newItem);
-                    return this.addCityAI();
+                    return setTimeout( this.addCityAI(itemText[itemText.length - 1].toLowerCase()), 3000);
                 }
                 else {
-                    let errObj = {
-                        message: 'This city has already been used',
-                        status: true
-                    };
-                    return this.props.catchError(errObj);
+                    return this.sendError(true, 'This city has already been used')
                 }
             }
 
         }
+        else {
+            return this.sendError(true, 'You need to enter a city with the first letter : ' + this.props.startLetter[0].toUpperCase())
+        }
     }
 
-    addCityAI (){
-        console.log(this.props.startLetter[0]);
-
+    addCityAI (firstLetter){
         for (let i = 0; i < cities.length; i++ ) {
-            if (cities[i].name[0].toLowerCase() === this.props.startLetter[0]){
-                for (let n = 0; n < this.props.addedCities.length; n++ ) {
-                    if (cities[i].name.toLowerCase() !== this.props.addedCities[n].name.toLowerCase()) {
-                        const newItemAI = {
-                            name: cities[i].name,
-                            author: 'AI'
-                        };
-                        this.lastLetter(newItemAI.name[newItemAI.name.length - 1]);
-                        return this.props.addCity(newItemAI);
-                    }
+            if (cities[i].name[0].toLowerCase() === firstLetter){
+                let validCity = this.props.addedCities.some(function (elem) {
+                    return elem.name.toLowerCase() === cities[i].name.toLowerCase();
+                });
+                if (!validCity){
+                    const newItemAI = {
+                        name: cities[i].name,
+                        author: 'AI'
+                    };
+                    this.lastLetter(newItemAI.name[newItemAI.name.length - 1]);
+                    return this.props.addCity(newItemAI);
                 }
             }
         }
@@ -100,9 +103,9 @@ class AddCity extends Component {
             <TextField
                 hintText = "Input city"
                 ref ="inputCity"
-                floatingLabelText="Floating Label Text"
+                floatingLabelText="City"
             />
-            <RaisedButton label="Primary" primary={true} onClick={this.addCityUser} />
+            <RaisedButton label="Send" primary={true} onClick={this.addCityUser} />
         </div>
 
     }
@@ -129,8 +132,7 @@ class UserMessage extends Component {
 class ListUserMessages extends Component{
     constructor(props){
         super(props);
-
-    }
+    };
     render () {
         return <List>
             {this.props.cities.map((item, i) =>
@@ -141,6 +143,7 @@ class ListUserMessages extends Component{
     }
 }
 
+/*
 class ComputerMessage extends Component {
     render () {
         return <div>
@@ -155,22 +158,25 @@ class ComputerMessage extends Component {
         </div>
     }
 }
+*/
 
 class AppView extends Component {
     render (){
         return <MuiThemeProvider>
-            <ListUserMessages {...this.props}/>
-            <AddCity catchError={this.props.catchError} addedCities={this.props.cities} addCity={this.props.addCity}
-                     setStartLetter={this.props.setStartLetter} startLetter={this.props.startLetter}
-            />
+            <Paper  className="scroll paper-list" zDepth={2}>
+                <ListUserMessages  {...this.props}/>
+            </Paper>
+            <Paper className="send-block" zDepth={2}>
+                <AddCity catchError={this.props.catchError} addedCities={this.props.cities} addCity={this.props.addCity}
+                         setStartLetter={this.props.setStartLetter} startLetter={this.props.startLetter}
+                />
+            </Paper>
             <Notification snackStatus={this.props.snackStatus} updateStatus={this.props.updateStatus}/>
-
         </MuiThemeProvider>
     }
 }
 export default connect (
     state =>  ({
-        test: console.log(state),
         cities: state.addCity,
         snackStatus: state.catchError,
         startLetter: state.setStartLetter

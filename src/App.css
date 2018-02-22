@@ -26,3 +26,43 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+.scroll::-webkit-scrollbar-track
+{
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  background-color: #F5F5F5;
+}
+
+.scroll::-webkit-scrollbar
+{
+  width: 5px;
+  background-color: #F5F5F5;
+}
+
+.scroll::-webkit-scrollbar-thumb
+{
+  background-color: #404040;
+  border: 2px solid #555555;
+}
+
+.paper-list {
+  min-height: 100px;
+  max-height: 40%;
+  padding: 20px;
+  background-color: #fdfdfd !important;
+  width: 75%;
+  margin: 20px auto 0;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  justify-content: center;
+}
+
+.send-block {
+  height: 80px;
+  margin: 0 auto;
+  padding: 10px;
+  width: 75%;
+  display: flex;
+  justify-content: center;
+}
