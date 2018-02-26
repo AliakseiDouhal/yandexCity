@@ -29,10 +29,10 @@
 
 .paper-list {
   min-height: 100px;
-  max-height: 500px;
+  max-height: 400px;
   padding: 20px;
   background-color: #fdfdfd !important;
-  width: 75%;
+  width: 100%;
   margin: 20px auto 0;
   overflow: auto;
 }
@@ -53,4 +53,9 @@
 {
   background-color: #aaaaaa;
   border: 2px solid #aaaaaa;
+}
+
+.content{
+  margin: auto;
+  width: 75%;
 }

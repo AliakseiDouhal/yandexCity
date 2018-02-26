@@ -49,7 +49,11 @@ class AddCity extends Component {
         let firstInputLetter = itemText[0].toLowerCase();
         if (!this.props.startLetter[0] || firstInputLetter === this.props.startLetter[0]) {
             let count = 0;
-            let cityValid = cities.some(this.checkCities);
+            let indexCity = 0;
+            let cityValid = cities.some(function (elem) {
+                indexCity++;
+                return elem.name.toLowerCase() === itemText;
+            });
             if (cityValid){
                 count++;
             }
@@ -63,8 +67,13 @@ class AddCity extends Component {
 
                 if (!isValid) {
                     this.refs.inputCity.getInputNode().value = '';
+                    const coord = {
+                        coordinates: [cities[indexCity - 1].lat, cities[indexCity - 1].lng]
+                    };
                     const newItem = {
+                        ...coord,
                         name: itemText,
+                        id: parseInt(Date.now(), 10),
                         author: 'I'
                     };
                     this.lastLetter(itemText[itemText.length - 1]);
@@ -90,8 +99,13 @@ class AddCity extends Component {
                     return elem.name.toLowerCase() === cities[i].name.toLowerCase();
                 });
                 if (!validCity){
+                    const coord = {
+                        coordinates: [cities[i].lat, cities[i].lng]
+                    };
                     const newItemAI = {
+                        ... coord,
                         name: cities[i].name,
+                        id: parseInt(Date.now(), 10),
                         author: 'AI'
                     };
                     this.lastLetter(newItemAI.name[newItemAI.name.length - 1]);
@@ -103,21 +117,23 @@ class AddCity extends Component {
     }
 
     render () {
-        return <div>
-            <TextField
-                hintText = "Input city"
-                ref ="inputCity"
-                floatingLabelText="City"
-                style={{marginRight: 25}}
-                onChange={ this.enterValue }
-            />
-            <RaisedButton label="Send"
-                          primary={true}
-                          disabled={!this.state.submit}
-                          onClick={this.addCityUser}
-                          style={{marginLeft: 25}}
-            />
-        </div>
+        return (
+            <div>
+                <TextField
+                    hintText = "Input city"
+                    ref ="inputCity"
+                    floatingLabelText="City"
+                    style={{marginRight: 25}}
+                    onChange={ this.enterValue }
+                />
+                <RaisedButton label="Send"
+                              primary={true}
+                              disabled={!this.state.submit}
+                              onClick={this.addCityUser}
+                              style={{marginLeft: 25}}
+                />
+            </div>
+        )
 
     }
 
