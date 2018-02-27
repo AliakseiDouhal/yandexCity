@@ -52,7 +52,7 @@ class AddCity extends Component {
             let indexCity = 0;
             let cityValid = cities.some(function (elem) {
                 indexCity++;
-                return elem.name.toLowerCase() === itemText;
+                return elem.name.toLowerCase() === itemText.toLowerCase();
             });
             if (cityValid){
                 count++;
