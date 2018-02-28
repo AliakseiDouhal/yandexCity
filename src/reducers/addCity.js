@@ -6,8 +6,8 @@ export default function addCity(state = [], action) {
                 ...state,
                 action.item
             ];
+        default:
+            return state
     }
-    return state;
-
 };
 

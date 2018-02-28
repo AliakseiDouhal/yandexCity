@@ -5,8 +5,8 @@ export default function setStartLetter(state = [], action) {
             return [
                 action.item
             ];
+        default:
+            return state;
     }
-    return state;
-
 };
 

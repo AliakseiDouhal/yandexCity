@@ -11,9 +11,10 @@ export default function catchError(state = initState, action) {
         case 'UPDATE_SNACK_STATUS':
             return [
                 action.item
-            ]
+            ];
+        default:
+            return state;
     }
-    return state;
 
 };
 

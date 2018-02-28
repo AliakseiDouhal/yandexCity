@@ -17,8 +17,13 @@ class AddCity extends Component {
         this.state = {submit: false};
     }
 
-    enterValue (e) {
-        if(e.target.value !== ''){
+    componentWillReceiveProps() {
+        this.enterValue();
+    }
+
+    enterValue () {
+        console.log(this.refs.inputCity.getValue());
+        if(this.refs.inputCity.getValue() !== ''){
             this.setState({submit: true})
         }
         else{
@@ -44,7 +49,8 @@ class AddCity extends Component {
         return this.props.catchError(errObj);
     }
 
-    addCityUser () {
+    addCityUser (event) {
+        event.preventDefault();
         let itemText = this.refs.inputCity.getValue().trim();
         let firstInputLetter = itemText[0].toLowerCase();
         if (!this.props.startLetter[0] || firstInputLetter === this.props.startLetter[0]) {
@@ -103,7 +109,7 @@ class AddCity extends Component {
                         coordinates: [cities[i].lat, cities[i].lng]
                     };
                     const newItemAI = {
-                        ... coord,
+                        ...coord,
                         name: cities[i].name,
                         id: parseInt(Date.now(), 10),
                         author: 'AI'
@@ -118,21 +124,23 @@ class AddCity extends Component {
 
     render () {
         return (
-            <div>
+            <form onSubmit={this.addCityUser}>
                 <TextField
                     hintText = "Input city"
                     ref ="inputCity"
                     floatingLabelText="City"
                     style={{marginRight: 25}}
                     onChange={ this.enterValue }
+                    autocomplete="off"
                 />
-                <RaisedButton label="Send"
-                              primary={true}
-                              disabled={!this.state.submit}
-                              onClick={this.addCityUser}
-                              style={{marginLeft: 25}}
+                <RaisedButton
+                    label="Send"
+                    primary={true}
+                    disabled={!this.state.submit}
+                    style={{marginLeft: 25}}
+                    type="submit"
                 />
-            </div>
+            </form>
         )
 
     }
