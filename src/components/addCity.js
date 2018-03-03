@@ -124,21 +124,21 @@ class AddCity extends Component {
 
     render () {
         return (
-            <form onSubmit={this.addCityUser}>
+            <form onSubmit = {this.addCityUser}>
                 <TextField
                     hintText = "Input city"
-                    ref ="inputCity"
-                    floatingLabelText="City"
-                    style={{marginRight: 25}}
-                    onChange={ this.enterValue }
-                    autocomplete="off"
+                    ref = "inputCity"
+                    floatingLabelText = "City"
+                    style = {{marginRight: 25}}
+                    onChange = { this.enterValue }
+                    autoComplete = "off"
                 />
                 <RaisedButton
-                    label="Send"
-                    primary={true}
-                    disabled={!this.state.submit}
-                    style={{marginLeft: 25}}
-                    type="submit"
+                    label = "Send"
+                    primary = {true}
+                    disabled = {!this.state.submit}
+                    style = {{marginLeft: 25}}
+                    type = "submit"
                 />
             </form>
         )
